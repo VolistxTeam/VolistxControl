@@ -9,14 +9,11 @@ use Illuminate\Support\Arr;
 class VolistxControl
 {
     protected $config;
-    /**
-     * @var \ArrayAccess|mixed
-     */
+
     protected $service;
 
-    public function __construct(string $service)
+    public function __construct()
     {
-        $this->getService($service);
     }
 
     public function config($key, $default = null)
@@ -24,11 +21,11 @@ class VolistxControl
         return Arr::get($this->config, $key, $default);
     }
 
-    public function getService()
+    public function getService($service)
     {
         if ($this->service === null) {
             // Get service configuration
-            $config = $this->config('services.' . $this->service, []);
+            $config = $this->config('services.' . $service, []);
 
             // Get service class
             $class = Arr::pull($config, 'class');

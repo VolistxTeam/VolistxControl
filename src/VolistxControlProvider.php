@@ -2,6 +2,7 @@
 
 namespace Volistx\Control;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +22,10 @@ class VolistxControlProvider extends ServiceProvider
         if ($this->isLumen() === false) {
             $this->mergeConfigFrom(__DIR__ . '/../config/volistx-control.php', 'volistx-control');
         }
+
+        App::bind('volistxcontrol',function() {
+            return new VolistxControl();
+        });
     }
 
     /**
@@ -46,4 +51,5 @@ class VolistxControlProvider extends ServiceProvider
     {
         return Str::contains($this->app->version(), 'Lumen') === true;
     }
+
 }
