@@ -4,18 +4,11 @@ namespace Volistx\Control;
 
 use Exception;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
 class VolistxControl
 {
-    protected $config;
-
     protected $service;
-
-    public function __construct()
-    {
-    }
 
     public function getService($service)
     {
