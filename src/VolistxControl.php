@@ -3,6 +3,7 @@
 namespace Volistx\Control;
 
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
@@ -16,16 +17,11 @@ class VolistxControl
     {
     }
 
-    public function config($key, $default = null)
-    {
-        return Arr::get($this->config, $key, $default);
-    }
-
     public function getService($service)
     {
         if ($this->service === null) {
             // Get service configuration
-            $config = $this->config('services.' . $service, []);
+            $config = Config::get('volistx-control.services.' . $service, []);
 
             // Get service class
             $class = Arr::pull($config, 'class');
