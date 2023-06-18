@@ -5,8 +5,9 @@ namespace Volistx\Control\Services;
 use GuzzleHttp\Client;
 use Volistx\Control\Conns\Status;
 use Volistx\Control\Conns\Subscription;
+use Volistx\Control\Contracts\ServiceInterface;
 
-class GeoPoint extends AbstractService
+class GeoPoint implements ServiceInterface
 {
     protected $client;
 

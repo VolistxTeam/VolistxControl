@@ -5,12 +5,13 @@ namespace Volistx\Control;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Arr;
+use Volistx\Control\Services\AbstractService;
 
 class VolistxControl
 {
-    protected $service;
+    protected AbstractService $service;
 
-    public function getService($service)
+    public function getService($service) : AbstractService
     {
         if ($this->service === null) {
             // Get service configuration
