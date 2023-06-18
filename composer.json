@@ -24,7 +24,7 @@
         "Volistx\\Control\\VolistxControlProvider"
       ],
       "aliases": {
-        "GeoIP": "Volistx\\Control\\Facades\\VolistxControl"
+        "VolistxControl": "Volistx\\Control\\Facades\\VolistxControlFacade"
       }
     }
   }
