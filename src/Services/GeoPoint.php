@@ -10,11 +10,6 @@ class GeoPoint extends AbstractService
 {
     protected $client;
 
-    /**
-     * The "booting" method of the service.
-     *
-     * @return void
-     */
     public function boot()
     {
         $this->client = new Client([
@@ -26,11 +21,13 @@ class GeoPoint extends AbstractService
         ]);
     }
 
-    public function subscription() {
+    public function subscription(): Subscription
+    {
         return new Subscription($this->client);
     }
 
-    public function status() {
+    public function status(): Status
+    {
         return new Status($this->client);
     }
 }

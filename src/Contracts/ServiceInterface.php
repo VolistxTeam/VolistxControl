@@ -5,6 +5,4 @@ namespace Volistx\Control\Contracts;
 interface ServiceInterface
 {
     public function boot();
-
-    public function config($key, $default = null);
 }
