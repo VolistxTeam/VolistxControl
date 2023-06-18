@@ -7,7 +7,7 @@ use Volistx\Control\Conns\Status;
 use Volistx\Control\Conns\Subscription;
 use Volistx\Control\Contracts\ServiceInterface;
 
-class GeoPoint implements ServiceInterface
+class GeoPoint extends AbstractService
 {
     protected $client;
 
