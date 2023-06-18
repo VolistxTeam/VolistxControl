@@ -4,7 +4,7 @@ namespace Volistx\Control\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class VolistxControlFacade extends Facade
+class VolistxControl extends Facade
 {
     /**
      * Get the registered name of the component.
