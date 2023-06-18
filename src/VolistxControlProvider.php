@@ -23,7 +23,7 @@ class VolistxControlProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__ . '/../config/volistx-control.php', 'volistx-control');
         }
 
-        App::bind('volistxcontrol',function() {
+        $this->app->bind('volistxcontrol', function() {
             return new VolistxControl();
         });
     }
