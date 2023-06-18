@@ -5,6 +5,7 @@ namespace Volistx\Control;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
+use Volistx\Control\Providers\VolistxControlServiceProvider;
 
 class VolistxControlProvider extends ServiceProvider
 {
@@ -23,9 +24,7 @@ class VolistxControlProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__ . '/../config/volistx-control.php', 'volistx-control');
         }
 
-        $this->app->bind('volistxcontrol', function() {
-            return new VolistxControl();
-        });
+        $this->app->register(VolistxControlServiceProvider::class);
     }
 
     /**

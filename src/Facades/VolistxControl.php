@@ -13,6 +13,6 @@ class VolistxControlFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'volistxcontrol';
+        return 'VolistxControl';
     }
 }
