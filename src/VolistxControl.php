@@ -5,30 +5,24 @@ namespace Volistx\Control;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Arr;
-use Volistx\Control\Services\AbstractService;
+use Volistx\Control\Contracts\ServiceInterface;
 
 class VolistxControl
 {
-    protected AbstractService $service;
-
-    public function getService($service) : AbstractService
+    public function getService($service) : ServiceInterface
     {
-        if ($this->service === null) {
-            // Get service configuration
-            $config = Config::get('volistx-control.services.' . $service, []);
+        // Get service configuration
+        $config = Config::get('volistx-control.services.' . $service, []);
 
-            // Get service class
-            $class = Arr::pull($config, 'class');
+        // Get service class
+        $class = Arr::pull($config, 'class');
 
-            // Sanity check
-            if ($class === null) {
-                throw new Exception('The Volistx service is not valid.');
-            }
-
-            // Create service instance
-            $this->service = new $class($config);
+        // Sanity check
+        if ($class === null) {
+            throw new Exception('The Volistx service is not valid.');
         }
 
-        return $this->service;
+        // Create service instance
+        return app($class, ['config' => $config]);
     }
 }
