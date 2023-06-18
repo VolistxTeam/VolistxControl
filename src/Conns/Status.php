@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 
 class Status {
 
-    protected $client;
+    protected Client $client;
 
     public function __construct(Client $client)
     {
@@ -17,7 +17,7 @@ class Status {
         try {
             $request = $this->client->get('ping');
 
-            return json_decode($request->getBody()->getContents());
+            return json_decode($request->getBody()->getContents(), true);
         } catch (\Exception) {
             return null;
         }

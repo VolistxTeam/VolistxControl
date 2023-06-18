@@ -5,6 +5,7 @@ namespace Volistx\Control\Services;
 use GuzzleHttp\Client;
 use Volistx\Control\Conns\Status;
 use Volistx\Control\Conns\Subscription;
+use Volistx\Control\Conns\User;
 use Volistx\Control\Contracts\ServiceInterface;
 
 class GeoPoint extends AbstractService
@@ -30,5 +31,10 @@ class GeoPoint extends AbstractService
     public function status(): Status
     {
         return new Status($this->client);
+    }
+
+    public function user() : User
+    {
+        return new User($this->client);
     }
 }
