@@ -1,19 +1,37 @@
 <?php
 
-namespace Volistx\Control\Conns;
+namespace Volistx\Control\Connections;
 
 use GuzzleHttp\Client;
 
+/**
+ * Class Status
+ * @package Volistx\Control\Connections
+ */
 class Status {
 
+    /**
+     * @var Client
+     */
     protected Client $client;
 
+    /**
+     * Status constructor.
+     *
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    public function ping() {
+    /**
+     * Ping the server.
+     *
+     * @return array|null
+     */
+    public function ping(): ?array
+    {
         try {
             $request = $this->client->get('ping');
 
@@ -23,7 +41,13 @@ class Status {
         }
     }
 
-    public function timestamp() {
+    /**
+     * Get server timestamp.
+     *
+     * @return string|null
+     */
+    public function timestamp(): ?string
+    {
         try {
             $request = $this->client->get('timestamp');
 

@@ -4,7 +4,7 @@ namespace Volistx\Control\Helpers;
 
 class Messages
 {
-    public function Error($type, $info): array
+    public static function Error($type, $info): array
     {
         return [
             'error' => [
@@ -14,38 +14,38 @@ class Messages
         ];
     }
 
-    public function E400($error = null): array
+    public static function E400($error = null): array
     {
-        return self::Error('InvalidParameter', $error ?? 'One or more invalid parameters were specified.');
+        return self::Error('InvalidParameter', $error ?? trans('volistx-control::error.e400'));
     }
 
-    public function E401($error = null): array
+    public static function E401($error = null): array
     {
-        return self::Error('Unauthorized', $error ?? 'You have insufficient permissions to access this resource.');
+        return self::Error('Unauthorized', $error ?? trans('volistx-control::error.e401'));
     }
 
-    public function E403($error = null): array
+    public static function E403($error = null): array
     {
-        return self::Error('Forbidden', $error ?? "You don't have permission to access this resource.");
+        return self::Error('Forbidden', $error ?? trans('volistx-control::error.e403'));
     }
 
-    public function E404($error = null): array
+    public static function E404($error = null): array
     {
-        return self::Error('NotFound', $error ?? "The requested resource could not be found.");
+        return self::Error('NotFound', $error ?? trans('volistx-control::error.e404'));
     }
 
-    public function E409($error = null): array
+    public static function E409($error = null): array
     {
-        return self::Error('Conflict', $error ?? 'The request could not be completed due to a conflict with the current state of the resource.');
+        return self::Error('Conflict', $error ?? trans('volistx-control::error.e409'));
     }
 
-    public function E429($error = null): array
+    public static function E429($error = null): array
     {
-        return self::Error('RateLimitReached', $error ?? 'You have exceeded the rate limit for this resource.');
+        return self::Error('RateLimitReached', $error ?? trans('volistx-control::error.e429'));
     }
 
-    public function E500($error = null): array
+    public static function E500($error = null): array
     {
-        return self::Error('Unknown', $error ?? 'An unexpected error occurred.');
+        return self::Error('Unknown', $error ?? trans('volistx-control::error.e500'));
     }
 }

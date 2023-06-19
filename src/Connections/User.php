@@ -1,6 +1,6 @@
 <?php
 
-namespace Volistx\Control\Conns;
+namespace Volistx\Control\Connections;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -9,7 +9,7 @@ use Volistx\Control\Helpers\Messages;
 
 /**
  * Class User
- * @package Volistx\Control\Conns
+ * @package Volistx\Control\Connections
  */
 class User
 {
@@ -85,9 +85,9 @@ class User
      * Delete a user.
      *
      * @param string $user_id
-     * @return array
+     * @return bool|array
      */
-    public function deleteUser(string $user_id): array
+    public function deleteUser(string $user_id): bool|array
     {
         $validator = Validator::make(
             [
@@ -103,9 +103,9 @@ class User
         }
 
         try {
-            $response = $this->client->delete("admin/users/{$user_id}");
+            $this->client->delete("admin/users/{$user_id}");
 
-            return json_decode($response->getBody()->getContents(), true);
+            return true;
         } catch (RequestException $e) {
             return json_decode($e->getResponse()->getBody()->getContents(), true);
         }

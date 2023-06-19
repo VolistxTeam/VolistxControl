@@ -24,7 +24,15 @@ class VolistxControlProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__ . '/../config/volistx-control.php', 'volistx-control');
         }
 
+        $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
+
         $this->app->register(VolistxControlServiceProvider::class);
+
+        $this->publishes([
+            __DIR__.'/../config/volistx-control.php'  => config_path('volistx-control.php'),
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+            __DIR__.'/../lang'                => resource_path('lang/vendor/volistx-control'),
+        ]);
     }
 
     /**

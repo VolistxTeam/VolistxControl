@@ -2,8 +2,9 @@
 
 namespace Volistx\Control\Contracts;
 
-use Volistx\Control\Conns\Status;
-use Volistx\Control\Conns\Subscription;
+use Volistx\Control\Connections\Status;
+use Volistx\Control\Connections\Subscription;
+use Volistx\Control\Connections\User;
 
 interface ServiceInterface
 {
@@ -12,4 +13,6 @@ interface ServiceInterface
     public function subscription() : Subscription;
 
     public function status() : Status;
+
+    public function user() : User;
 }
