@@ -16,7 +16,7 @@ class Subscription {
 
     public function __construct(Client $client, string $user_id)
     {
-        $this->module = 'subscription';
+        $this->module = 'subscriptions';
         $this->client = $client;
         $this->user_id = $user_id;
     }
@@ -148,7 +148,7 @@ class Subscription {
         }
     }
 
-    public function getAll(string $search = '', int $page = 1, int $limit = 50)
+    public function getAll(string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('search', 'page', 'limit');
         $inputs['user_id'] = $this->user_id;
@@ -169,7 +169,7 @@ class Subscription {
         }
     }
 
-    public function getLogs(string $subscription_id, string $search = '', int $page = 1, int $limit = 50)
+    public function getLogs(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('subscription_id', 'search', 'page', 'limit');
         $inputs['user_id'] = $this->user_id;
@@ -190,7 +190,7 @@ class Subscription {
         }
     }
 
-    public function getUsages(string $subscription_id, string $search = '', int $page = 1, int $limit = 50)
+    public function getUsages(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('subscription_id', 'search', 'page', 'limit');
         $inputs['user_id'] = $this->user_id;
