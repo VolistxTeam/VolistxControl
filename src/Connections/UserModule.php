@@ -11,11 +11,9 @@ class UserModule
 {
     protected Client $client;
     protected string $user_id;
-
-    use HasKernelValidations;
-
     public string $id;
     public bool $is_active;
+
     public function __construct(Client $client, string $user_id, bool $is_active)
     {
         $this->client = $client;
