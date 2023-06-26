@@ -23,11 +23,6 @@ class GeoPoint extends AbstractService
         ]);
     }
 
-    public function subscription(): Subscription
-    {
-        return new Subscription($this->client);
-    }
-
     public function status(): Status
     {
         return new Status($this->client);

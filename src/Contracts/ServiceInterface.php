@@ -10,8 +10,6 @@ interface ServiceInterface
 {
     public function boot();
 
-    public function subscription() : Subscription;
-
     public function status() : Status;
 
     public function user() : User;

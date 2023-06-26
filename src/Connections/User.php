@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Validator;
 use Volistx\Control\Helpers\Messages;
+use Volistx\Validation\Traits\HasKernelValidations;
 
 /**
  * Class User
@@ -17,6 +18,9 @@ class User
      * @var Client
      */
     protected Client $client;
+    protected string $module;
+
+    use HasKernelValidations;
 
     /**
      * User constructor.
@@ -26,6 +30,7 @@ class User
     public function __construct(Client $client)
     {
         $this->client = $client;
+        $this->module = 'user';
     }
 
     /**
@@ -33,10 +38,21 @@ class User
      *
      * @return array
      */
-    public function createUser(): array
+    public function createUser($user_id = null)
     {
+        $inputs = compact('user_id');
+        $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
+
+        if ($validator->fails()) {
+            return Messages::E400($validator->errors()->first());
+        }
+
         try {
-            $response = $this->client->post('admin/users');
+            $response = $this->client->post("admin/users", [
+                'json' => [
+                    'user_id' => $user_id
+                ],
+            ]);
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
@@ -53,16 +69,8 @@ class User
      */
     public function updateUser(string $user_id, bool $is_active): array
     {
-        $validator = Validator::make(
-            [
-                'user_id' => $user_id,
-                'is_active' => $is_active
-            ],
-            [
-                'user_id'   => ['bail', 'required', 'uuid'],
-                'is_active' => ['bail', 'sometimes', 'boolean'],
-            ]
-        );
+        $inputs = compact('user_id', 'is_active');
+        $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
             return Messages::E400($validator->errors()->first());
@@ -89,14 +97,8 @@ class User
      */
     public function deleteUser(string $user_id): bool|array
     {
-        $validator = Validator::make(
-            [
-                'user_id' => $user_id,
-            ],
-            [
-                'user_id' => ['bail', 'required', 'uuid'],
-            ]
-        );
+        $inputs = compact('user_id');
+        $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
             return Messages::E400($validator->errors()->first());
@@ -111,22 +113,10 @@ class User
         }
     }
 
-    /**
-     * Get a user.
-     *
-     * @param string $user_id
-     * @return array
-     */
-    public function getUser(string $user_id): array
+    public function getUser(string $user_id): UserModule
     {
-        $validator = Validator::make(
-            [
-                'user_id' => $user_id,
-            ],
-            [
-                'user_id' => ['bail', 'required', 'uuid'],
-            ]
-        );
+        $inputs = compact('user_id');
+        $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
             return Messages::E400($validator->errors()->first());
@@ -135,7 +125,9 @@ class User
         try {
             $response = $this->client->get("admin/users/{$user_id}");
 
-            return json_decode($response->getBody()->getContents(), true);
+            $responseArray = json_decode($response->getBody()->getContents(), true);
+
+            return new UserModule($this->client, $responseArray['id'], $responseArray['is_active']);
         } catch (RequestException $e) {
             return json_decode($e->getResponse()->getBody()->getContents(), true);
         }
