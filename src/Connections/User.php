@@ -37,16 +37,17 @@ class User
     /**
      * Create a user.
      *
+     * @param string|null $user_id
      * @return array
      * @throws Exception|GuzzleException|RequestException
      */
-    public function createUser($user_id = null)
+    public function createUser(string $user_id = null): array
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
