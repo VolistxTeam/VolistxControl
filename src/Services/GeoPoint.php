@@ -26,7 +26,7 @@ class GeoPoint extends AbstractService
         return new Status($this->client);
     }
 
-    public function user() : User
+    public function user(): User
     {
         return new User($this->client);
     }

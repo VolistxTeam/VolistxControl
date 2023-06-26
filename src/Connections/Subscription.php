@@ -2,12 +2,16 @@
 
 namespace Volistx\Control\Connections;
 
+use DateTime;
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Volistx\Control\Helpers\Messages;
 use Volistx\Validation\Traits\HasKernelValidations;
 
-class Subscription {
+class Subscription
+{
     protected Client $client;
     protected string $module;
     protected string $user_id;
@@ -21,14 +25,17 @@ class Subscription {
         $this->user_id = $user_id;
     }
 
-    public function create(string $plan_id, \DateTime $activated_at, \DateTime $expires_at = null)
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
+    public function create(string $plan_id, DateTime $activated_at, DateTime $expires_at = null)
     {
         $inputs = compact('plan_id', 'activated_at', 'expires_at');
         $inputs['user_id'] = $this->user_id;
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -37,24 +44,27 @@ class Subscription {
                     'user_id' => $this->user_id,
                     'plan_id' => $plan_id,
                     'activated_at' => $activated_at->format('Y-m-d H:i:s'),
-                    'expires_at' =>$expires_at?->format('Y-m-d H:i:s'),
+                    'expires_at' => $expires_at?->format('Y-m-d H:i:s'),
                 ],
             ]);
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
-    public function mutate(string $subscription_id, string $plan_id = null, string $status = null, \DateTime $activated_at = null, \DateTime $expires_at = null, \DateTime $cancels_at = null, \DateTime $cancelled_at = null)
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
+    public function mutate(string $subscription_id, string $plan_id = null, string $status = null, DateTime $activated_at = null, DateTime $expires_at = null, DateTime $cancels_at = null, DateTime $cancelled_at = null)
     {
         $inputs = compact('subscription_id', 'plan_id', 'status', 'activated_at', 'expires_at', 'cancels_at', 'cancelled_at');
         $inputs['user_id'] = $this->user_id;
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -64,10 +74,13 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
     public function delete(string $subscription_id)
     {
         $inputs = compact('subscription_id');
@@ -75,7 +88,7 @@ class Subscription {
         $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -83,18 +96,21 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
-    public function cancel(string $subscription_id, \DateTime $cancels_at)
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
+    public function cancel(string $subscription_id, DateTime $cancels_at)
     {
         $inputs = compact('subscription_id', 'cancels_at');
         $inputs['user_id'] = $this->user_id;
         $validator = $this->GetModuleValidation($this->module)->generateCancelValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -106,18 +122,21 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
-    public function uncancel(string $subscription_id)
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
+    public function undoCancel(string $subscription_id)
     {
         $inputs = compact('subscription_id');
         $inputs['user_id'] = $this->user_id;
         $validator = $this->GetModuleValidation($this->module)->generateUncancelValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -125,29 +144,13 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
-    public function get(string $subscription_id)
-    {
-        $inputs = compact('subscription_id');
-        $inputs['user_id'] = $this->user_id;
-        $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
-
-        if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
-        }
-
-        try {
-            $response = $this->client->get("admin/users/{$this->user_id}/subscriptions/{$subscription_id}");
-
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
-        }
-    }
-
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
     public function getAll(string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('search', 'page', 'limit');
@@ -155,7 +158,7 @@ class Subscription {
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -165,10 +168,35 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
+    public function get(string $subscription_id)
+    {
+        $inputs = compact('subscription_id');
+        $inputs['user_id'] = $this->user_id;
+        $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
+
+        if ($validator->fails()) {
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+        }
+
+        try {
+            $response = $this->client->get("admin/users/{$this->user_id}/subscriptions/{$subscription_id}");
+
+            return json_decode($response->getBody()->getContents());
+        } catch (RequestException $e) {
+            throw new Exception($e->getResponse()->getBody()->getContents());
+        }
+    }
+
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
     public function getLogs(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('subscription_id', 'search', 'page', 'limit');
@@ -176,7 +204,7 @@ class Subscription {
         $validator = $this->GetModuleValidation($this->module)->generateGetLogsValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -186,10 +214,13 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
     public function getUsages(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('subscription_id', 'search', 'page', 'limit');
@@ -197,7 +228,7 @@ class Subscription {
         $validator = $this->GetModuleValidation($this->module)->generateGetUsageValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -207,7 +238,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 }

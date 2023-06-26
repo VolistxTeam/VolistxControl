@@ -4,6 +4,11 @@ namespace Volistx\Control\Helpers;
 
 class Messages
 {
+    public static function E400($error = null): array
+    {
+        return self::Error('InvalidParameter', $error ?? trans('volistx::error.e400'));
+    }
+
     public static function Error($type, $info): array
     {
         return [
@@ -12,11 +17,6 @@ class Messages
                 'info' => $info,
             ],
         ];
-    }
-
-    public static function E400($error = null): array
-    {
-        return self::Error('InvalidParameter', $error ?? trans('volistx::error.e400'));
     }
 
     public static function E401($error = null): array

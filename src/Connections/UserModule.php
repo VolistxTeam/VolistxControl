@@ -3,16 +3,13 @@
 namespace Volistx\Control\Connections;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Volistx\Control\Helpers\Messages;
-use Volistx\Validation\Traits\HasKernelValidations;
 
 class UserModule
 {
-    protected Client $client;
-    protected string $user_id;
     public string $id;
     public bool $is_active;
+    protected Client $client;
+    protected string $user_id;
 
     public function __construct(Client $client, string $user_id, bool $is_active)
     {

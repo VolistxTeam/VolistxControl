@@ -2,9 +2,10 @@
 
 namespace Volistx\Control\Connections;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Facades\Validator;
 use Volistx\Control\Helpers\Messages;
 use Volistx\Validation\Traits\HasKernelValidations;
 
@@ -37,6 +38,7 @@ class User
      * Create a user.
      *
      * @return array
+     * @throws Exception|GuzzleException|RequestException
      */
     public function createUser($user_id = null)
     {
@@ -56,7 +58,7 @@ class User
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -66,6 +68,7 @@ class User
      * @param string $user_id
      * @param bool $is_active
      * @return array
+     * @throws Exception|GuzzleException|RequestException
      */
     public function updateUser(string $user_id, bool $is_active): array
     {
@@ -73,7 +76,7 @@ class User
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -85,7 +88,7 @@ class User
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -94,6 +97,7 @@ class User
      *
      * @param string $user_id
      * @return bool|array
+     * @throws Exception|GuzzleException|RequestException
      */
     public function deleteUser(string $user_id): bool|array
     {
@@ -101,7 +105,7 @@ class User
         $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -109,17 +113,20 @@ class User
 
             return true;
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
+    /**
+     * @throws Exception|GuzzleException|RequestException
+     */
     public function getUser(string $user_id): UserModule
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
-            return Messages::E400($validator->errors()->first());
+            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
         }
 
         try {
@@ -129,7 +136,7 @@ class User
 
             return new UserModule($this->client, $responseArray['id'], $responseArray['is_active']);
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
+            throw new Exception($e->getResponse()->getBody()->getContents());
         }
     }
 }

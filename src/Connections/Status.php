@@ -2,13 +2,17 @@
 
 namespace Volistx\Control\Connections;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * Class Status
  * @package Volistx\Control\Connections
  */
-class Status {
+class Status
+{
 
     /**
      * @var Client
@@ -29,6 +33,7 @@ class Status {
      * Ping the server.
      *
      * @return array|null
+     * @throws Exception|GuzzleException|RequestException
      */
     public function ping(): ?array
     {
@@ -36,7 +41,7 @@ class Status {
             $request = $this->client->get('ping');
 
             return json_decode($request->getBody()->getContents(), true);
-        } catch (\Exception) {
+        } catch (Exception) {
             return null;
         }
     }
@@ -45,6 +50,7 @@ class Status {
      * Get server timestamp.
      *
      * @return string|null
+     * @throws Exception|GuzzleException|RequestException
      */
     public function timestamp(): ?string
     {
@@ -52,7 +58,7 @@ class Status {
             $request = $this->client->get('timestamp');
 
             return $request->getBody()->getContents();
-        } catch (\Exception) {
+        } catch (Exception) {
             return null;
         }
     }

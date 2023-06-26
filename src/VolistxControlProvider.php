@@ -2,9 +2,8 @@
 
 namespace Volistx\Control;
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Volistx\Control\Providers\VolistxControlServiceProvider;
 
 class VolistxControlProvider extends ServiceProvider
@@ -27,8 +26,8 @@ class VolistxControlProvider extends ServiceProvider
         $this->app->register(VolistxControlServiceProvider::class);
 
         $this->publishes([
-            __DIR__.'/../config/volistx-control.php'  => config_path('volistx-control.php'),
-            __DIR__.'/../database/migrations' => database_path('migrations')
+            __DIR__ . '/../config/volistx-control.php' => config_path('volistx-control.php'),
+            __DIR__ . '/../database/migrations' => database_path('migrations')
         ]);
     }
 
