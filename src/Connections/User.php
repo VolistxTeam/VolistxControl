@@ -119,6 +119,8 @@ class User
     }
 
     /**
+     * @param string $user_id
+     * @return UserModule
      * @throws Exception|GuzzleException|RequestException
      */
     public function getUser(string $user_id): UserModule
