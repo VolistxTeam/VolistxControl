@@ -4,9 +4,7 @@ namespace Volistx\Control\Services;
 
 use GuzzleHttp\Client;
 use Volistx\Control\Connections\Status;
-use Volistx\Control\Connections\Subscription;
 use Volistx\Control\Connections\User;
-use Volistx\Control\Contracts\ServiceInterface;
 
 class GeoPoint extends AbstractService
 {
@@ -15,7 +13,7 @@ class GeoPoint extends AbstractService
     public function boot()
     {
         $this->client = new Client([
-            'base_uri' => ($this->config('secure') ? 'https' : 'http') . '://volistx-framework.test/sys-bin/',
+            'base_uri' => ($this->config('secure') ? 'https' : 'http') . '://' . $this->config('base_uri') . '/sys-bin/',
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->config('access_key'),
                 'Accept' => 'application/json',

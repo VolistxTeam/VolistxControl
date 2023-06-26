@@ -28,8 +28,7 @@ class VolistxControlProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../config/volistx-control.php'  => config_path('volistx-control.php'),
-            __DIR__.'/../database/migrations' => database_path('migrations'),
-            __DIR__.'/../lang'                => resource_path('lang/vendor/volistx-control'),
+            __DIR__.'/../database/migrations' => database_path('migrations')
         ]);
     }
 

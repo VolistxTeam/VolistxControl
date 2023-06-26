@@ -43,7 +43,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -64,7 +64,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -83,7 +83,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -106,7 +106,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -125,7 +125,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -144,7 +144,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -165,7 +165,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -186,7 +186,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -207,7 +207,7 @@ class Subscription {
 
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents());
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 }

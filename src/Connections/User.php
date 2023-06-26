@@ -56,7 +56,7 @@ class User
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -85,7 +85,7 @@ class User
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -109,7 +109,7 @@ class User
 
             return true;
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 
@@ -129,7 +129,7 @@ class User
 
             return new UserModule($this->client, $responseArray['id'], $responseArray['is_active']);
         } catch (RequestException $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }
 }
