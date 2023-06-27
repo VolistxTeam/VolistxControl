@@ -8,16 +8,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Volistx\Control\Helpers\Messages;
-use Volistx\Validation\Traits\HasKernelValidations;
-
-class Subscription
+class Subscription extends ModuleBase
 {
-    protected Client $client;
-    protected string $module;
-    protected string $user_id;
-
-    use HasKernelValidations;
-
     public function __construct(Client $client, string $user_id)
     {
         $this->module = 'subscriptions';
@@ -30,8 +22,13 @@ class Subscription
      */
     public function create(string $plan_id, DateTime $activated_at, DateTime $expires_at = null)
     {
-        $inputs = compact('plan_id', 'activated_at', 'expires_at');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'user_id' => $this->user_id,
+            'plan_id' => $plan_id,
+            'activated_at' => $activated_at->format('Y-m-d H:i:s'),
+            'expires_at' => $expires_at?->format('Y-m-d H:i:s')
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
@@ -40,12 +37,7 @@ class Subscription
 
         try {
             $response = $this->client->post("admin/users/{$this->user_id}/subscriptions", [
-                'json' => [
-                    'user_id' => $this->user_id,
-                    'plan_id' => $plan_id,
-                    'activated_at' => $activated_at->format('Y-m-d H:i:s'),
-                    'expires_at' => $expires_at?->format('Y-m-d H:i:s'),
-                ],
+                'json' => $inputs,
             ]);
 
             return json_decode($response->getBody()->getContents());
@@ -59,8 +51,17 @@ class Subscription
      */
     public function mutate(string $subscription_id, string $plan_id = null, string $status = null, DateTime $activated_at = null, DateTime $expires_at = null, DateTime $cancels_at = null, DateTime $cancelled_at = null)
     {
-        $inputs = compact('subscription_id', 'plan_id', 'status', 'activated_at', 'expires_at', 'cancels_at', 'cancelled_at');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'user_id' => $this->user_id,
+            'subscription_id' => $subscription_id,
+            'plan_id' => $plan_id,
+            'status' => $status,
+            'activated_at' => $activated_at?->format('Y-m-d H:i:s'),
+            'expires_at' => $expires_at?->format('Y-m-d H:i:s'),
+            'cancels_at' => $cancels_at?->format('Y-m-d H:i:s'),
+            'cancelled_at' => $cancelled_at?->format('Y-m-d H:i:s'),
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
@@ -83,8 +84,11 @@ class Subscription
      */
     public function delete(string $subscription_id)
     {
-        $inputs = compact('subscription_id');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'user_id' => $this->user_id,
+            'subscription_id' => $subscription_id
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
@@ -105,8 +109,12 @@ class Subscription
      */
     public function cancel(string $subscription_id, DateTime $cancels_at)
     {
-        $inputs = compact('subscription_id', 'cancels_at');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = $inputs = [
+            'user_id' => $this->user_id,
+            'subscription_id' => $subscription_id,
+            'cancels_at' => $cancels_at?->format('Y-m-d H:i:s'),
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateCancelValidation($inputs);
 
         if ($validator->fails()) {
@@ -115,9 +123,7 @@ class Subscription
 
         try {
             $response = $this->client->put("admin/users/{$this->user_id}/subscriptions/{$subscription_id}/cancel", [
-                'json' => [
-                    'cancels_at' => $cancels_at->format('Y-m-d H:i:s'),
-                ],
+                'json' => $inputs,
             ]);
 
             return json_decode($response->getBody()->getContents());
@@ -131,8 +137,11 @@ class Subscription
      */
     public function undoCancel(string $subscription_id)
     {
-        $inputs = compact('subscription_id');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'user_id' => $this->user_id,
+            'subscription_id' => $subscription_id,
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateUncancelValidation($inputs);
 
         if ($validator->fails()) {
@@ -154,7 +163,6 @@ class Subscription
     public function getAll(string $search = null, int $page = 1, int $limit = 50)
     {
         $inputs = compact('search', 'page', 'limit');
-        $inputs['user_id'] = $this->user_id;
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
@@ -163,7 +171,7 @@ class Subscription
 
         try {
             $response = $this->client->get("admin/users/{$this->user_id}/subscriptions", [
-                'query' => compact('search', 'page', 'limit'),
+                'query' => $inputs,
             ]);
 
             return json_decode($response->getBody()->getContents());
@@ -177,9 +185,10 @@ class Subscription
      */
     public function get(string $subscription_id)
     {
-        $inputs = compact('subscription_id');
-        $inputs['user_id'] = $this->user_id;
-        $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
+        $validator = $this->GetModuleValidation($this->module)->generateGetValidation([
+            'user_id' => $this->user_id,
+            'subscription_id' => $subscription_id,
+        ]);
 
         if ($validator->fails()) {
             throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
@@ -199,8 +208,14 @@ class Subscription
      */
     public function getLogs(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
-        $inputs = compact('subscription_id', 'search', 'page', 'limit');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'subscription_id' => $subscription_id,
+            'search' => $search,
+            'page' => $page,
+            'limit' => $limit,
+            'user_id' => $this->user_id
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateGetLogsValidation($inputs);
 
         if ($validator->fails()) {
@@ -223,8 +238,14 @@ class Subscription
      */
     public function getUsages(string $subscription_id, string $search = null, int $page = 1, int $limit = 50)
     {
-        $inputs = compact('subscription_id', 'search', 'page', 'limit');
-        $inputs['user_id'] = $this->user_id;
+        $inputs = [
+            'subscription_id' => $subscription_id,
+            'search' => $search,
+            'page' => $page,
+            'limit' => $limit,
+            'user_id' => $this->user_id
+        ];
+
         $validator = $this->GetModuleValidation($this->module)->generateGetUsageValidation($inputs);
 
         if ($validator->fails()) {
