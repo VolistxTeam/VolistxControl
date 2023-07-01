@@ -11,11 +11,10 @@ use Volistx\Control\Helpers\Messages;
 
 class Plan extends ModuleBase
 {
-    public function __construct(Client $client, string $user_id)
+    public function __construct(Client $client)
     {
         $this->module = 'plans';
         $this->client = $client;
-        $this->user_id = $user_id;
     }
 
     /**

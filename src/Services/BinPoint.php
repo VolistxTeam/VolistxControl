@@ -4,7 +4,7 @@ namespace Volistx\Control\Services;
 
 use GuzzleHttp\Client;
 
-class GeoPoint extends AbstractService
+class BinPoint extends AbstractService
 {
     public function boot()
     {

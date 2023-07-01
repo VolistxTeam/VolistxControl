@@ -10,11 +10,10 @@ use Volistx\Control\Helpers\Messages;
 
 class AdminLog extends ModuleBase
 {
-    public function __construct(Client $client, string $user_id)
+    public function __construct(Client $client)
     {
         $this->module = 'admin-logs';
         $this->client = $client;
-        $this->user_id = $user_id;
     }
 
 

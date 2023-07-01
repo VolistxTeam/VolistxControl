@@ -13,22 +13,11 @@ use Volistx\Validation\Traits\HasKernelValidations;
  * Class User
  * @package Volistx\Control\Connections
  */
-class User
+class User extends ModuleBase
 {
-    /**
-     * @var Client
-     */
-    protected Client $client;
-    protected string $module;
-
     use HasKernelValidations;
 
-    /**
-     * User constructor.
-     *
-     * @param Client $client
-     */
-    public function __construct(Client $client)
+    public function __construct($client)
     {
         $this->client = $client;
         $this->module = 'user';
@@ -118,12 +107,7 @@ class User
         }
     }
 
-    /**
-     * @param string $user_id
-     * @return UserModule
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function getUser(string $user_id): UserModule
+    public function getUser(string $user_id)
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
@@ -135,9 +119,7 @@ class User
         try {
             $response = $this->client->get("admin/users/{$user_id}");
 
-            $responseArray = json_decode($response->getBody()->getContents(), true);
-
-            return new UserModule($this->client, $responseArray['id'], $responseArray['is_active']);
+            return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
         }

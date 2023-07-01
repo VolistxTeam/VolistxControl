@@ -8,5 +8,17 @@ return [
             'secure' => false,
             'access_key' => '',
         ],
+        'BinPoint' => [
+            'base_uri' => 'volistx-framework.test',
+            'class' => \Volistx\Control\Services\BinPoint::class,
+            'secure' => false,
+            'access_key' => '',
+        ],
+        'UserPoint' => [
+            'base_uri' => 'volistx-framework.test',
+            'class' => \Volistx\Control\Services\UserPoint::class,
+            'secure' => false,
+            'access_key' => '',
+        ],
     ]
 ];
