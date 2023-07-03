@@ -4,8 +4,8 @@ namespace Volistx\Control\Connections;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 
@@ -17,17 +17,13 @@ class AdminLog extends ModuleBase
         $this->client = $client;
     }
 
-
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function getAll(string $search = null, int $page = 1, int $limit = 50)
+    public function getAll(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
     {
         $inputs = compact('search', 'page', 'limit');
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return new ProcessedResponse(null, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -36,30 +32,27 @@ class AdminLog extends ModuleBase
             ]);
 
             return new ProcessedResponse($response);
-        } catch (RequestException $e) {
-            return new ProcessedResponse($e);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function get(string $log_id)
+    public function get(string $log_id): ProcessedResponse
     {
         $inputs = compact('log_id');
 
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return new ProcessedResponse(null, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->get("admin/logs/$log_id");
 
             return new ProcessedResponse($response);
-        } catch (RequestException $e) {
-            return new ProcessedResponse($e);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }

@@ -5,8 +5,10 @@ namespace Volistx\Control\Connections;
 use DateTime;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 
 class Plan extends ModuleBase
@@ -17,10 +19,7 @@ class Plan extends ModuleBase
         $this->client = $client;
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function create(string $name, string $tag, string $description, array $data, float $price, int $tier, string $custom)
+    public function create(string $name, string $tag, string $description, array $data, float $price, int $tier, string $custom): ProcessedResponse
     {
         $inputs = [
             'name' => $name,
@@ -43,16 +42,13 @@ class Plan extends ModuleBase
                 'json' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function update(string $plan_id, string $name = null, string $tag = null, string $description = null, array $data = null, float $price = null, int $tier = null, string $custom = null, bool $is_active = null)
+    public function update(string $plan_id, string $name = null, string $tag = null, string $description = null, array $data = null, float $price = null, int $tier = null, string $custom = null, bool $is_active = null): ProcessedResponse
     {
         $inputs = [
             'plan_id' => $plan_id,
@@ -77,16 +73,13 @@ class Plan extends ModuleBase
                 'json' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function delete(string $plan_id)
+    public function delete(string $plan_id): ProcessedResponse
     {
         $inputs = compact('plan_id');
 
@@ -99,22 +92,19 @@ class Plan extends ModuleBase
         try {
             $response = $this->client->delete("admin/plans/$plan_id");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function getAll(string $search = null, int $page = 1, int $limit = 50)
+    public function getAll(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
     {
         $inputs = compact('search', 'page', 'limit');
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return new ProcessedResponse(null, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -122,16 +112,16 @@ class Plan extends ModuleBase
                 'query' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
     /**
-     * @throws Exception|GuzzleException|RequestException
+     * @throws Exception|RequestException
      */
-    public function get(string $plan_id)
+    public function get(string $plan_id): ProcessedResponse
     {
         $inputs = compact('plan_id');
 
@@ -144,9 +134,9 @@ class Plan extends ModuleBase
         try {
             $response = $this->client->get("admin/plans/$plan_id");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }
