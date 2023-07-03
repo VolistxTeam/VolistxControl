@@ -13,14 +13,14 @@ class ProcessedResponse
     public mixed $body;
     public bool $isError;
 
-    public function __construct($response = null, array $error = null)
+    public function __construct($response = null)
     {
         if ($response) {
             if ($response instanceof (BadResponseException::class)) {
                 $this->headers = $response->getResponse()->getHeaders();
                 $this->body = json_decode($response->getResponse()->getBody()->getContents(), true);
                 $this->status_code = $response->getResponse()->getStatusCode();
-                $this->isError =  $this->status_code !== 200;
+                $this->isError = $this->status_code !== 200;
 
                 return;
             }
@@ -29,23 +29,25 @@ class ProcessedResponse
                 $this->headers = $response->getHeaders();
                 $this->body = json_decode($response->getBody()->getContents(), true);
                 $this->status_code = $response->getStatusCode();
-                $this->isError =  $this->status_code !== 200;
+                $this->isError = $this->status_code !== 200;
                 return;
             }
 
             if ($response instanceof (GuzzleException::class)) {
                 $this->status_code = 500;
-                $this->isError =  $this->status_code !== 200;
+                $this->isError = $this->status_code !== 200;
                 $this->headers = null;
                 $this->body = null;
             }
         }
+    }
 
-        if ($error) {
-            $this->isError = true;
-            $this->headers = null;
-            $this->body = $error;
-            $this->status_code = 400;
-        }
+    public function invalidate(int $status, array $error): ProcessedResponse
+    {
+        $this->isError = true;
+        $this->headers = null;
+        $this->body = $error;
+        $this->status_code = $status;
+        return $this;
     }
 }

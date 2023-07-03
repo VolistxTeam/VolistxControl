@@ -23,7 +23,7 @@ class AdminLog extends ModuleBase
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            return new ProcessedResponse(null, Messages::E400($validator->errors()->first()));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -44,7 +44,7 @@ class AdminLog extends ModuleBase
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
-            return new ProcessedResponse(null, Messages::E400($validator->errors()->first()));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
