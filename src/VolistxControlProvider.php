@@ -20,14 +20,14 @@ class VolistxControlProvider extends ServiceProvider
         }
 
         if ($this->isLumen() === false) {
-            $this->mergeConfigFrom(__DIR__ . '/../config/volistx-control.php', 'volistx-control');
+            $this->mergeConfigFrom(__DIR__.'/../config/volistx-control.php', 'volistx-control');
         }
 
         $this->app->register(VolistxControlServiceProvider::class);
 
         $this->publishes([
-            __DIR__ . '/../config/volistx-control.php' => config_path('volistx-control.php'),
-            __DIR__ . '/../database/migrations' => database_path('migrations')
+            __DIR__.'/../config/volistx-control.php' => config_path('volistx-control.php'),
+            __DIR__.'/../database/migrations' => database_path('migrations'),
         ]);
     }
 
@@ -40,7 +40,7 @@ class VolistxControlProvider extends ServiceProvider
     {
         if ($this->isLumen() === false) {
             $this->publishes([
-                __DIR__ . '/../config/volistx-control.php' => config_path('volistx-control.php'),
+                __DIR__.'/../config/volistx-control.php' => config_path('volistx-control.php'),
             ], 'config');
         }
     }
@@ -54,5 +54,4 @@ class VolistxControlProvider extends ServiceProvider
     {
         return Str::contains($this->app->version(), 'Lumen') === true;
     }
-
 }

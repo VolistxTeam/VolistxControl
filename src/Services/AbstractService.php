@@ -12,22 +12,18 @@ use Volistx\Control\Connections\Subscription;
 use Volistx\Control\Connections\User;
 use Volistx\Control\Connections\UserLog;
 use Volistx\Control\Contracts\ServiceInterface;
-use Volistx\Validation\Modules\AdminLogModule;
 
 abstract class AbstractService implements ServiceInterface
 {
     /**
      * Driver config
-     *
-     * @var array
      */
     protected array $config;
+
     protected Client $client;
 
     /**
      * Create a new service instance.
-     *
-     * @param array $config
      */
     public function __construct(array $config = [])
     {

@@ -2,16 +2,14 @@
 
 namespace Volistx\Control\Connections;
 
-use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 use Volistx\Validation\Traits\HasKernelValidations;
 
 /**
  * Class User
- * @package Volistx\Control\Connections
  */
 class User extends ModuleBase
 {
@@ -25,103 +23,93 @@ class User extends ModuleBase
 
     /**
      * Create a user.
-     *
-     * @param string|null $user_id
-     * @return array
-     * @throws Exception|GuzzleException|RequestException
      */
-    public function createUser(string $user_id = null): array
+    public function createUser(string $user_id = null): ProcessedResponse
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
-            $response = $this->client->post("admin/users", [
+            $response = $this->client->post('admin/users', [
                 'json' => [
-                    'user_id' => $user_id
+                    'user_id' => $user_id,
                 ],
             ]);
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
     /**
      * Update a user.
-     *
-     * @param string $user_id
-     * @param bool $is_active
-     * @return array
-     * @throws Exception|GuzzleException|RequestException
      */
-    public function updateUser(string $user_id, bool $is_active): array
+    public function updateUser(string $user_id, bool $is_active): ProcessedResponse
     {
         $inputs = compact('user_id', 'is_active');
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->patch("admin/users/{$user_id}", [
                 'json' => [
-                    'is_active' => $is_active
+                    'is_active' => $is_active,
                 ],
             ]);
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
     /**
      * Delete a user.
-     *
-     * @param string $user_id
-     * @return bool|array
-     * @throws Exception|GuzzleException|RequestException
      */
-    public function deleteUser(string $user_id): bool|array
+    public function deleteUser(string $user_id): ProcessedResponse
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
-            $this->client->delete("admin/users/{$user_id}");
+            $response = $this->client->delete("admin/users/{$user_id}");
 
-            return true;
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    public function getUser(string $user_id)
+    /**
+     * Get a user.
+     */
+    public function getUser(string $user_id): ProcessedResponse
     {
         $inputs = compact('user_id');
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->get("admin/users/{$user_id}");
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }

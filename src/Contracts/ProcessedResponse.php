@@ -9,8 +9,11 @@ use Psr\Http\Message\ResponseInterface;
 class ProcessedResponse
 {
     public ?int $status_code;
+
     public ?array $headers;
+
     public mixed $body;
+
     public bool $isError;
 
     public function __construct($response = null)
@@ -30,6 +33,7 @@ class ProcessedResponse
                 $this->body = json_decode($response->getBody()->getContents(), true);
                 $this->status_code = $response->getStatusCode();
                 $this->isError = $this->status_code !== 200;
+
                 return;
             }
 
@@ -48,6 +52,7 @@ class ProcessedResponse
         $this->headers = null;
         $this->body = $error;
         $this->status_code = $status;
+
         return $this;
     }
 }

@@ -3,10 +3,10 @@
 namespace Volistx\Control\Connections;
 
 use DateTime;
-use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 
 class PersonalToken extends ModuleBase
@@ -18,12 +18,9 @@ class PersonalToken extends ModuleBase
         $this->user_id = $user_id;
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
     public function create(string $name, DateTime $expires_at, int $rate_limit_mode = null,
-                           array  $permission = null, int $ip_rule = null, array $ip_range = null,
-                           int    $country_rule = null, array $country_range = null, bool $disable_logging = null, string $hmac_token = null)
+        array $permission = null, int $ip_rule = null, array $ip_range = null,
+        int $country_rule = null, array $country_range = null, bool $disable_logging = null, string $hmac_token = null): ProcessedResponse
     {
         $inputs = [
             'user_id' => $this->user_id,
@@ -36,13 +33,13 @@ class PersonalToken extends ModuleBase
             'country_rule' => $country_rule,
             'country_range' => $country_range,
             'disable_logging' => $disable_logging,
-            'hmac_token' => $hmac_token
+            'hmac_token' => $hmac_token,
         ];
 
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -50,18 +47,15 @@ class PersonalToken extends ModuleBase
                 'json' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
     public function update(string $token_id, string $name = null, DateTime $expires_at = null, int $rate_limit_mode = null,
-                           array  $permission = null, int $ip_rule = null, array $ip_range = null,
-                           int    $country_rule = null, array $country_range = null, bool $disable_logging = null, string $hmac_token = null)
+        array $permission = null, int $ip_rule = null, array $ip_range = null,
+        int $country_rule = null, array $country_range = null, bool $disable_logging = null, string $hmac_token = null): ProcessedResponse
     {
         $inputs = [
             'user_id' => $this->user_id,
@@ -75,13 +69,13 @@ class PersonalToken extends ModuleBase
             'country_rule' => $country_rule,
             'country_range' => $country_range,
             'disable_logging' => $disable_logging,
-            'hmac_token' => $hmac_token
+            'hmac_token' => $hmac_token,
         ];
 
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -89,72 +83,63 @@ class PersonalToken extends ModuleBase
                 'json' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function delete(string $token_id)
+    public function delete(string $token_id): ProcessedResponse
     {
         $inputs = [
             'user_id' => $this->user_id,
-            'token_id' => $token_id
+            'token_id' => $token_id,
         ];
 
         $validator = $this->GetModuleValidation($this->module)->generateDeleteValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->delete("admin/users/{$this->user_id}/personal-tokens/$token_id");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function reset(string $token_id)
+    public function reset(string $token_id): ProcessedResponse
     {
         $inputs = [
             'user_id' => $this->user_id,
-            'token_id' => $token_id
+            'token_id' => $token_id,
         ];
 
         $validator = $this->GetModuleValidation($this->module)->generateResetValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->post("admin/users/{$this->user_id}/personal-tokens/$token_id/reset");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function getAll(string $search = null, int $page = 1, int $limit = 50)
+    public function getAll(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
     {
         $inputs = compact('search', 'page', 'limit');
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
@@ -162,16 +147,13 @@ class PersonalToken extends ModuleBase
                 'query' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function get(string $token_id)
+    public function get(string $token_id): ProcessedResponse
     {
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation([
             'user_id' => $this->user_id,
@@ -179,37 +161,34 @@ class PersonalToken extends ModuleBase
         ]);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->get("admin/users/{$this->user_id}/personal-tokens/$token_id");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function sync(string $user_id)
+    public function sync(string $user_id): ProcessedResponse
     {
         $validator = $this->GetModuleValidation($this->module)->generateSyncValidation([
             'user_id' => $this->user_id,
         ]);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->post("admin/users/{$this->user_id}/personal-tokens/sync");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }

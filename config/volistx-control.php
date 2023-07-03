@@ -4,21 +4,21 @@ return [
     'services' => [
         'GeoPoint' => [
             'base_uri' => 'volistx-framework.test',
-            'class' => \Volistx\Control\Services\GeoPoint::class,
+            'class' => \Volistx\Control\Services\BasicService::class,
             'secure' => false,
             'access_key' => '',
         ],
-        'BinPoint' => [
+        'BINPoint' => [
             'base_uri' => 'volistx-framework.test',
-            'class' => \Volistx\Control\Services\BinPoint::class,
+            'class' => \Volistx\Control\Services\BasicService::class,
             'secure' => false,
             'access_key' => '',
         ],
         'UserPoint' => [
             'base_uri' => 'volistx-framework.test',
-            'class' => \Volistx\Control\Services\UserPoint::class,
+            'class' => \Volistx\Control\Services\BasicService::class,
             'secure' => false,
             'access_key' => '',
         ],
-    ]
+    ],
 ];

@@ -2,7 +2,6 @@
 
 namespace Volistx\Control\Connections;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -17,7 +16,7 @@ class AdminLog extends ModuleBase
         $this->client = $client;
     }
 
-    public function getAll(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
+    public function getAllLogs(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
     {
         $inputs = compact('search', 'page', 'limit');
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
@@ -27,7 +26,7 @@ class AdminLog extends ModuleBase
         }
 
         try {
-            $response = $this->client->get("admin/logs", [
+            $response = $this->client->get('admin/logs', [
                 'query' => $inputs,
             ]);
 
@@ -37,7 +36,7 @@ class AdminLog extends ModuleBase
         }
     }
 
-    public function get(string $log_id): ProcessedResponse
+    public function getLog(string $log_id): ProcessedResponse
     {
         $inputs = compact('log_id');
 

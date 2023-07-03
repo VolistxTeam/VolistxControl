@@ -2,10 +2,10 @@
 
 namespace Volistx\Control\Connections;
 
-use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 
 class UserLog extends ModuleBase
@@ -16,49 +16,42 @@ class UserLog extends ModuleBase
         $this->client = $client;
     }
 
-
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function getAll(string $search = null, int $page = 1, int $limit = 50)
+    public function getAllLogs(string $search = null, int $page = 1, int $limit = 50): ProcessedResponse
     {
         $inputs = compact('search', 'page', 'limit');
         $validator = $this->GetModuleValidation($this->module)->generateGetAllValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
-            $response = $this->client->get("admin/user-logs", [
+            $response = $this->client->get('admin/user-logs', [
                 'query' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
-    /**
-     * @throws Exception|GuzzleException|RequestException
-     */
-    public function get(string $log_id)
+    public function getLog(string $log_id): ProcessedResponse
     {
         $inputs = compact('log_id');
 
         $validator = $this->GetModuleValidation($this->module)->generateGetValidation($inputs);
 
         if ($validator->fails()) {
-            throw new Exception(json_encode(Messages::E400($validator->errors()->first())));
+            return (new ProcessedResponse())->invalidate(400, Messages::E400($validator->errors()->first()));
         }
 
         try {
             $response = $this->client->get("admin/user-logs/$log_id");
 
-            return json_decode($response->getBody()->getContents());
-        } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($response);
+        } catch (ClientException|GuzzleException $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }

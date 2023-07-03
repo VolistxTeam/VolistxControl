@@ -6,23 +6,17 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 
 /**
  * Class Status
- * @package Volistx\Control\Connections
  */
 class Status
 {
-
-    /**
-     * @var Client
-     */
     protected Client $client;
 
     /**
      * Status constructor.
-     *
-     * @param Client $client
      */
     public function __construct(Client $client)
     {
@@ -32,34 +26,32 @@ class Status
     /**
      * Ping the server.
      *
-     * @return array|null
      * @throws Exception|GuzzleException|RequestException
      */
-    public function ping(): ?array
+    public function ping(): ProcessedResponse
     {
         try {
-            $request = $this->client->get('ping');
+            $response = $this->client->get('ping');
 
-            return json_decode($request->getBody()->getContents(), true);
-        } catch (Exception) {
-            return null;
+            return new ProcessedResponse($response);
+        } catch (Exception $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 
     /**
      * Get server timestamp.
      *
-     * @return string|null
      * @throws Exception|GuzzleException|RequestException
      */
-    public function timestamp(): ?string
+    public function timestamp(): ProcessedResponse
     {
         try {
-            $request = $this->client->get('timestamp');
+            $response = $this->client->get('timestamp');
 
-            return $request->getBody()->getContents();
-        } catch (Exception) {
-            return null;
+            return new ProcessedResponse($response);
+        } catch (Exception $ex) {
+            return new ProcessedResponse($ex);
         }
     }
 }
