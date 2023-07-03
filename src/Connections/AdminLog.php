@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Volistx\Control\Contracts\ProcessedResponse;
 use Volistx\Control\Helpers\Messages;
 
 class AdminLog extends ModuleBase
@@ -34,9 +35,9 @@ class AdminLog extends ModuleBase
                 'query' => $inputs,
             ]);
 
-            return json_decode($response->getBody()->getContents());
+            return new ProcessedResponse($response);
         } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($e);
         }
     }
 
@@ -56,9 +57,9 @@ class AdminLog extends ModuleBase
         try {
             $response = $this->client->get("admin/logs/$log_id");
 
-            return json_decode($response->getBody()->getContents());
+            return new ProcessedResponse($response);
         } catch (RequestException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
+            return new ProcessedResponse($e);
         }
     }
 }
