@@ -45,7 +45,7 @@ class Plan extends ModuleBase
         }
     }
 
-    public function updatePlan(string $plan_id, string $name = null, string $tag = null, string $description = null, array $data = null, float $price = null, int $tier = null, string $custom = null, bool $is_active = null): ProcessedResponse
+    public function updatePlan(string $plan_id, string $name = null, string $tag = null, string $description = null, array $data = null, float $price = null, int $tier = null, bool $custom = null, bool $is_active = null): ProcessedResponse
     {
         $inputs = [
             'plan_id' => $plan_id,
