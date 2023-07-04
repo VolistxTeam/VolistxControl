@@ -5,9 +5,9 @@ namespace Volistx\Control\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method \Volistx\Control\VolistxControl getService(string $service)
+ * @method \Volistx\Control\VolistxControlManager getService(string $service)
  *
- * @see \Volistx\Control\VolistxControl
+ * @see \Volistx\Control\VolistxControlManager
  */
 class VolistxControl extends Facade
 {

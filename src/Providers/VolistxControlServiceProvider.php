@@ -3,7 +3,7 @@
 namespace Volistx\Control\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Volistx\Control\VolistxControl;
+use Volistx\Control\VolistxControlManager;
 
 class VolistxControlServiceProvider extends ServiceProvider
 {
@@ -24,7 +24,7 @@ class VolistxControlServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('VolistxControl', function () {
-            return new VolistxControl();
+            return new VolistxControlManager();
         });
     }
 }

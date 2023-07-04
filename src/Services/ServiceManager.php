@@ -12,7 +12,7 @@ use Volistx\Control\Connections\Subscription;
 use Volistx\Control\Connections\User;
 use Volistx\Control\Connections\UserLog;
 
-abstract class AbstractService
+class ServiceManager
 {
     /**
      * Driver config
@@ -28,17 +28,13 @@ abstract class AbstractService
     {
         $this->config = $config;
 
-        $this->boot();
-    }
-
-    /**
-     * The "booting" method of the service.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+        $this->client = new Client([
+            'base_uri' => ($this->config('secure') ? 'https' : 'http') . '://' . $this->config('base_uri') . '/sys-bin/',
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->config('access_key'),
+                'Accept' => 'application/json',
+            ],
+        ]);
     }
 
     public function config($key, $default = null)
