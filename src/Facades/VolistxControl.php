@@ -3,11 +3,10 @@
 namespace Volistx\Control\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Volistx\Control\Services\ServiceManager;
 
 /**
- * @method \Volistx\Control\VolistxControlManager getService(string $service)
- *
- * @see \Volistx\Control\VolistxControlManager
+ * @method ServiceManager getService(string $service)
  */
 class VolistxControl extends Facade
 {
