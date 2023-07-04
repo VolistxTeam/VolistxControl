@@ -5,11 +5,11 @@ namespace Volistx\Control;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use Volistx\Control\Contracts\ServiceInterface;
+use Volistx\Control\Services\BasicService;
 
 class VolistxControl
 {
-    public function getService($service): ServiceInterface
+    public function getService($service): BasicService
     {
         // Get service configuration
         $config = Config::get('volistx-control.services.'.$service, []);
