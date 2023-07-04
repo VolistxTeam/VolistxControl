@@ -16,7 +16,7 @@ class Plan extends ModuleBase
         $this->client = $client;
     }
 
-    public function createPlan(string $name, string $tag, string $description, array $data, float $price, int $tier, string $custom): ProcessedResponse
+    public function createPlan(string $name, string $tag, string $description, array $data, float $price, int $tier, bool $custom): ProcessedResponse
     {
         $inputs = [
             'name' => $name,
