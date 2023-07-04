@@ -11,9 +11,8 @@ use Volistx\Control\Connections\Status;
 use Volistx\Control\Connections\Subscription;
 use Volistx\Control\Connections\User;
 use Volistx\Control\Connections\UserLog;
-use Volistx\Control\Contracts\ServiceInterface;
 
-abstract class AbstractService implements ServiceInterface
+abstract class AbstractService
 {
     /**
      * Driver config
@@ -57,27 +56,27 @@ abstract class AbstractService implements ServiceInterface
         return new User($this->client);
     }
 
-    public function Subscription($user_id): Subscription
+    public function subscription($user_id): Subscription
     {
         return new Subscription($this->client, $user_id);
     }
 
-    public function PersonalToken($user_id): PersonalToken
+    public function personalToken($user_id): PersonalToken
     {
         return new PersonalToken($this->client, $user_id);
     }
 
-    public function AdminLog(): AdminLog
+    public function adminLog(): AdminLog
     {
         return new AdminLog($this->client);
     }
 
-    public function UserLog(): UserLog
+    public function userLog(): UserLog
     {
         return new UserLog($this->client);
     }
 
-    public function Plan(): Plan
+    public function plan(): Plan
     {
         return new Plan($this->client);
     }

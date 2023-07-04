@@ -23,39 +23,4 @@ class BasicService extends AbstractService
             ],
         ]);
     }
-
-    public function status(): Status
-    {
-        return new Status($this->client);
-    }
-
-    public function user(): User
-    {
-        return new User($this->client);
-    }
-
-    public function subscription($user_id): Subscription
-    {
-        return new Subscription($this->client, $user_id);
-    }
-
-    public function personalToken($user_id): PersonalToken
-    {
-        return new PersonalToken($this->client, $user_id);
-    }
-
-    public function adminLog(): AdminLog
-    {
-        return new AdminLog($this->client);
-    }
-
-    public function userLog(): UserLog
-    {
-        return new UserLog($this->client);
-    }
-
-    public function plan(): Plan
-    {
-        return new Plan($this->client);
-    }
 }
