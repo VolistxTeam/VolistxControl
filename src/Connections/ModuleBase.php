@@ -14,4 +14,11 @@ class ModuleBase
     protected string $user_id;
 
     use HasKernelValidations;
+
+    protected function SanitizeInputs(&$inputs): void
+    {
+        $inputs = array_filter($inputs, function ($x) {
+            return $x !== null;
+        });
+    }
 }

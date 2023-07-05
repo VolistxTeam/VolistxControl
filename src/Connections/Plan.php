@@ -59,6 +59,8 @@ class Plan extends ModuleBase
             'is_active' => $is_active,
         ];
 
+        $this->SanitizeInputs($inputs);
+
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
         if ($validator->fails()) {
