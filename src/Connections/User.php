@@ -27,6 +27,8 @@ class User extends ModuleBase
     public function createUser(string $user_id = null): ProcessedResponse
     {
         $inputs = compact('user_id');
+        $this->SanitizeInputs($inputs);
+
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {

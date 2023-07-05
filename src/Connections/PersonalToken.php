@@ -36,6 +36,8 @@ class PersonalToken extends ModuleBase
             'hmac_token' => $hmac_token,
         ];
 
+        $this->SanitizeInputs($inputs);
+
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
@@ -71,6 +73,8 @@ class PersonalToken extends ModuleBase
             'disable_logging' => $disable_logging,
             'hmac_token' => $hmac_token,
         ];
+
+        $this->SanitizeInputs($inputs);
 
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 

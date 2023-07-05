@@ -27,6 +27,8 @@ class Subscription extends ModuleBase
             'expires_at' => $expires_at?->format('Y-m-d H:i:s'),
         ];
 
+        $this->SanitizeInputs($inputs);
+
         $validator = $this->GetModuleValidation($this->module)->generateCreateValidation($inputs);
 
         if ($validator->fails()) {
@@ -56,6 +58,8 @@ class Subscription extends ModuleBase
             'cancels_at' => $cancels_at?->format('Y-m-d H:i:s'),
             'cancelled_at' => $cancelled_at?->format('Y-m-d H:i:s'),
         ];
+
+        $this->SanitizeInputs($inputs);
 
         $validator = $this->GetModuleValidation($this->module)->generateUpdateValidation($inputs);
 
