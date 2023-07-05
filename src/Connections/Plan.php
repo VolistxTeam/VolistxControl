@@ -68,7 +68,7 @@ class Plan extends ModuleBase
         }
 
         try {
-            $response = $this->client->put("admin/plans/$plan_id", [
+            $response = $this->client->patch("admin/plans/$plan_id", [
                 'json' => $inputs,
             ]);
 
